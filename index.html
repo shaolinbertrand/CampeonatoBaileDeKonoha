@@ -10,13 +10,13 @@
     <h1>Torneio: O Melhor Shinobi do Baile de Konoha</h1>
 
     <div class="container">
-        <div class="input-section">
+        <div class="input-section" id="inputSection">
             <h2>Adicionar Shinobi</h2>
             <input type="text" id="playerNameInput" placeholder="Nome do Shinobi">
             <button id="addPlayerBtn">Adicionar</button>
         </div>
 
-        <div class="player-list-section">
+        <div class="player-list-section" id="playerListSection">
             <h2>Shinobis Inscritos (<span id="playerCount">0</span>)</h2>
             <div id="playerList">
                 </div>
@@ -39,9 +39,15 @@
         const startTournamentBtn = document.getElementById('startTournamentBtn');
         const tournamentBracketDiv = document.getElementById('tournamentBracket');
 
+        // --- Novas referências para as seções ---
+        const inputSection = document.getElementById('inputSection');
+        const playerListSection = document.getElementById('playerListSection');
+
         let players = [];
-        let currentRound = 0; // Controla a rodada atual
-        let matches = []; // Armazena as partidas de cada rodada
+        let currentRound = 0;
+        let matches = [];
+
+        // ... (resto do seu código JavaScript, como updatePlayerList, addPlayerBtn, etc.) ...
 
         // Função para atualizar a lista de jogadores na tela
         function updatePlayerList() {
@@ -62,7 +68,7 @@
         // Adicionar jogador
         addPlayerBtn.addEventListener('click', () => {
             const playerName = playerNameInput.value.trim();
-            if (playerName && !players.includes(playerName)) { // Evita nomes duplicados
+            if (playerName && !players.includes(playerName)) {
                 players.push(playerName);
                 playerNameInput.value = '';
                 updatePlayerList();
@@ -82,7 +88,7 @@
 
         // Habilita/desabilita o botão de iniciar torneio
         function updateStartButtonState() {
-            startTournamentBtn.disabled = players.length < 4; // Mínimo de 4 jogadores
+            startTournamentBtn.disabled = players.length < 4;
         }
 
         // Função para embaralhar os jogadores (Fisher-Yates shuffle)
@@ -96,8 +102,8 @@
 
         // Função para criar as chaves da primeira rodada
         function createFirstRoundMatches() {
-            let shuffledPlayers = shuffleArray([...players]); // Cópia embaralhada
-            matches = []; // Limpa partidas anteriores
+            let shuffledPlayers = shuffleArray([...players]);
+            matches = [];
 
             if (shuffledPlayers.length % 2 !== 0) {
                 alert("Número ímpar de jogadores. Um jogador terá um 'bye' ou a chave pode ficar desbalanceada.");
@@ -106,15 +112,15 @@
             let roundMatches = [];
             for (let i = 0; i < shuffledPlayers.length; i += 2) {
                 const player1 = shuffledPlayers[i];
-                const player2 = shuffledPlayers[i + 1] || 'BYE'; // Se for ímpar, o último terá um BYE
+                const player2 = shuffledPlayers[i + 1] || 'BYE';
                 roundMatches.push({
                     player1: player1,
                     player2: player2,
                     winner: null,
-                    matchId: `R0M${roundMatches.length}` // ID da partida
+                    matchId: `R0M${roundMatches.length}`
                 });
             }
-            matches.push(roundMatches); // Adiciona a primeira rodada
+            matches.push(roundMatches);
             currentRound = 0;
             renderTournamentBracket();
         }
@@ -126,13 +132,13 @@
                 .filter(match => match.winner !== null && match.winner !== 'BYE')
                 .map(match => match.winner);
 
-            if (winners.length <= 1) { // Torneio finalizado ou apenas um vencedor
+            if (winners.length <= 1) {
                 if (winners.length === 1) {
                     alert(`O grande vencedor do torneio é: ${winners[0]}! Parabéns!`);
                 } else {
                     alert('Nenhum vencedor para a próxima rodada. Verifique as partidas anteriores.');
                 }
-                startTournamentBtn.disabled = true; // Desabilita o botão de iniciar após o fim
+                startTournamentBtn.disabled = true;
                 return;
             }
 
@@ -141,7 +147,6 @@
             }
 
             let nextRoundMatches = [];
-            // Embaralha os vencedores para novas combinações
             let shuffledWinners = shuffleArray(winners);
             for (let i = 0; i < shuffledWinners.length; i += 2) {
                 const player1 = shuffledWinners[i];
@@ -160,7 +165,9 @@
 
         // Função para renderizar as chaves do torneio
         function renderTournamentBracket() {
-            tournamentBracketDiv.innerHTML = ''; // Limpa as chaves atuais
+            tournamentBracketDiv.innerHTML = '';
+
+            const versusClasses = ['vs1', 'vs2', 'vs3'];
 
             matches.forEach((roundMatches, roundIndex) => {
                 const roundDiv = document.createElement('div');
@@ -172,12 +179,8 @@
                     matchDiv.className = 'match';
                     matchDiv.dataset.matchId = match.matchId;
 
-                    // Remover a classe 'versus' aqui, ela será adicionada na declaração do vencedor
-                    // matchDiv.classList.add(randomVersusClass); // REMOVIDO AQUI
-
                     if (match.winner) {
                         matchDiv.classList.add('completed');
-                        // Se a partida já tem vencedor, garantir que a imagem versus não apareça
                         matchDiv.classList.add('hide-versus');
                     }
 
@@ -206,6 +209,14 @@
         startTournamentBtn.addEventListener('click', () => {
             if (players.length >= 4) {
                 if (confirm('Deseja realmente iniciar o torneio? Os jogadores não poderão ser mais alterados.')) {
+                    // --- OCULTA AS SEÇÕES DE INPUT E LISTA DE JOGADORES ---
+                    inputSection.classList.add('hidden-section');
+                    playerListSection.classList.add('hidden-section');
+
+                    // Garante que a seção das chaves seja visível (caso estivesse oculta)
+                    tournamentBracketDiv.closest('.tournament-bracket-section').style.display = 'block'; // ou 'flex', dependendo do layout desejado
+                    // O container principal pode precisar de ajuste de largura se o conteúdo diminuir muito
+
                     playerNameInput.disabled = true;
                     addPlayerBtn.disabled = true;
                     startTournamentBtn.disabled = true;
@@ -243,38 +254,35 @@
                     }
 
                     if (foundMatch) {
-                        // --- LÓGICA PARA EXIBIR E ESCONDER O VERSUS ---
                         const versusClasses = ['vs1', 'vs2', 'vs3'];
                         const randomVersusClass = versusClasses[Math.floor(Math.random() * versusClasses.length)];
 
-                        // 1. Adiciona a imagem versus e exibe
-                        matchDiv.classList.remove('hide-versus'); // Garante que não esteja escondido
+                        matchDiv.classList.remove('hide-versus');
+                        // Remove qualquer classe versus anterior para aplicar a nova aleatoriamente
+                        versusClasses.forEach(cls => matchDiv.classList.remove(cls));
                         matchDiv.classList.add(randomVersusClass);
-                        matchDiv.style.opacity = '1'; // Torna visível (se a transição estiver no CSS)
+                        matchDiv.style.opacity = '1';
 
-                        // 2. Esconde o select e o botão durante a "animação" do versus
                         winnerSelect.style.display = 'none';
                         event.target.style.display = 'none';
-                        
-                        // 3. Define um tempo para exibir o "versus" e depois processar o vencedor
+
                         setTimeout(() => {
                             foundMatch.winner = selectedWinner;
                             matchDiv.classList.add('completed');
-                            matchDiv.classList.add('hide-versus'); // Esconde a imagem versus
-                            matchDiv.classList.remove(randomVersusClass); // Remove a classe versus
+                            matchDiv.classList.add('hide-versus');
+                            // Não remove a classe randomVersusClass aqui, pois hide-versus já oculta a imagem
                             
-                            // Re-renderiza a chave para mostrar o vencedor e a próxima rodada
                             renderTournamentBracket();
 
                             const allCurrentRoundMatchesCompleted = matches[currentRound].every(match => match.winner !== null);
 
-                            if (allCurrentRoundRoundMatchesCompleted) {
+                            if (allCurrentRoundMatchesCompleted) {
                                 setTimeout(() => {
                                     alert(`Todos os jogos da Rodada ${currentRound + 1} foram concluídos! Gerando próxima rodada...`);
                                     generateNextRound();
-                                }, 500); // Pequeno delay antes de gerar a próxima rodada
+                                }, 500);
                             }
-                        }, 1500); // Tempo em milissegundos que a imagem 'versus' ficará visível (1.5 segundos)
+                        }, 1500);
 
                     }
                 } else {
