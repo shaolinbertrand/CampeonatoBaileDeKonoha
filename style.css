@@ -5,18 +5,18 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    /* Usando Press Start 2P para um toque de videogame, ou Permanent Marker para algo mais caligráfico */
     /* font-family: 'Press Start 2P', cursive; */
     /* font-family: 'Permanent Marker', cursive; */
-    background-color: #1a1a1a; /* Fundo escuro, mais misterioso */
+    background-color: #1a1a1a; /* Fundo escuro */
     color: #e0e0e0; /* Texto claro */
     margin: 0; /* Remove margem padrão */
     padding: 20px;
     text-align: center;
-    background-image: url('https://i.imgur.com/your-shuriken-pattern.png'), url('https://i.imgur.com/your-katana-background.png'); /* Exemplo: padrão de shuriken e katana no fundo */
-    background-repeat: repeat, no-repeat;
-    background-position: top left, bottom right;
-    background-size: 100px, 400px; /* Tamanho dos padrões/imagens de fundo */
+    /* --- IMAGEM DE FUNDO AKATSUKI --- */
+    background-image: url('akatsuki.png'); /* Sua imagem da Akatsuki */
+    background-size: cover; /* Cobre todo o fundo */
+    background-repeat: no-repeat;
+    background-position: center center;
     background-attachment: fixed; /* Mantém o fundo fixo ao rolar */
 }
 
@@ -49,15 +49,15 @@ h2 {
     margin: 40px auto;
     text-align: left;
     border: 3px solid #FFD700; /* Borda dourada mais grossa */
-    position: relative; /* Para posicionar elementos decorativos */
-    overflow: hidden; /* Garante que nada vaze */
+    position: relative;
+    overflow: hidden;
 }
 
-/* Detalhes de Kunai nos cantos (exemplo) */
+/* Detalhes de Kunai nos cantos (exemplo, você pode substituir por algo mais Akatsuki) */
 .container::before, .container::after {
     content: '';
     position: absolute;
-    width: 50px; /* Tamanho da kunai */
+    width: 50px;
     height: 50px;
     background-size: contain;
     background-repeat: no-repeat;
@@ -67,14 +67,14 @@ h2 {
 .container::before {
     top: -25px;
     left: -25px;
-    background-image: url('https://i.imgur.com/your-kunai-icon.png'); /* Ícone de kunai */
+    background-image: url('kunai-icon.png'); /* Assumindo que você tem essa imagem */
     transform: rotate(-45deg);
 }
 
 .container::after {
     bottom: -25px;
     right: -25px;
-    background-image: url('https://i.imgur.com/your-kunai-icon.png'); /* Ícone de kunai */
+    background-image: url('kunai-icon.png'); /* Assumindo que você tem essa imagem */
     transform: rotate(135deg);
 }
 
@@ -89,7 +89,7 @@ input[type="text"] {
     font-size: 1.1em;
     background-color: #2b2b2b; /* Fundo escuro */
     color: #eee;
-    outline: none; /* Remove a borda de foco padrão */
+    outline: none;
     transition: border-color 0.3s ease;
 }
 input[type="text"]:focus {
@@ -111,7 +111,7 @@ button:hover {
 }
 
 #addPlayerBtn {
-    background-color: #007bff; /* Azul clássico */
+    background-color: #007bff;
     color: white;
     border: 1px solid #0056b3;
 }
@@ -142,7 +142,7 @@ button:hover {
 }
 
 .player-item button {
-    background-color: #dc3545; /* Vermelho forte para remover */
+    background-color: #dc3545;
     color: white;
     font-size: 0.9em;
     padding: 6px 12px;
@@ -153,7 +153,7 @@ button:hover {
 }
 
 #startTournamentBtn {
-    background-color: #FFC107; /* Amarelo/Laranja para iniciar */
+    background-color: #FFC107;
     color: #333;
     margin-top: 30px;
     border: 1px solid #e0a800;
@@ -165,126 +165,4 @@ button:hover {
     background-color: #555;
     cursor: not-allowed;
     border: 1px solid #444;
-    color: #bbb;
-}
-
-/* --- Chave do Torneio --- */
-.tournament-bracket-section {
-    margin-top: 40px;
-    padding-top: 20px;
-    border-top: 1px dashed #444;
-}
-
-.tournament-bracket {
-    display: flex;
-    justify-content: center; /* Centraliza as rodadas */
-    padding: 20px 0;
-    flex-wrap: wrap;
-    gap: 20px; /* Espaçamento entre rodadas */
-}
-
-.round {
-    margin: 10px;
-    padding: 15px;
-    border-right: 2px solid #555; /* Borda separadora de rodadas */
-    flex-basis: 0; /* Permite que o flexbox distribua o espaço */
-    flex-grow: 1;
-    min-width: 200px; /* Largura mínima para rodada */
-    background-color: #252525;
-    border-radius: 8px;
-}
-.round:last-child {
-    border-right: none;
-}
-
-.match {
-    background-color: #3a3a3a; /* Fundo mais escuro para a partida */
-    margin-bottom: 15px;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.3);
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    border: 1px solid #555; /* Borda sutil */
-    position: relative;
-    overflow: hidden;
-}
-
-.match::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: url('https://i.imgur.com/your-shuriken-icon.png'); /* Ícone de shuriken como marca d'água sutil */
-    background-size: 40px;
-    background-repeat: no-repeat;
-    background-position: 10px 10px;
-    opacity: 0.05; /* Bem transparente */
-    z-index: 0;
-}
-
-
-.match .player {
-    padding: 8px;
-    background-color: #4c4c4c; /* Fundo para o nome do jogador */
-    border-radius: 5px;
-    border: 1px solid #666;
-    color: #FFD700; /* Cor dourada para o nome do jogador */
-    font-weight: bold;
-    font-size: 1.1em;
-    z-index: 1; /* Garante que o texto fique acima do ícone */
-}
-
-.match select {
-    width: 100%;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #777;
-    margin-top: 5px;
-    background-color: #2b2b2b;
-    color: #eee;
-    font-size: 1em;
-    appearance: none; /* Remove estilo padrão do select */
-    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http://www.w3.org/2000/svg%22%20viewBox%3D%220%200%20256%20256%22%3E%3Cpath%20fill%3D%22%23eeeeee%22%20d%3D%22M200.41,84.19l-72.1,72.1a16,16,0,0,1-22.62,0L53.59,84.19A16,16,0,0,0,30.97,106.81l72.1,72.1a16,16,0,0,0,22.62,0l72.1-72.1A16,16,0,0,0,200.41,84.19Z%22/%3E%3C/svg%3E'); /* Seta customizada */
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 16px;
-    cursor: pointer;
-}
-.match select option {
-    background-color: #2b2b2b;
-    color: #eee;
-}
-
-.match button.declare-winner {
-    background-color: #28a745; /* Verde para declarar vencedor */
-    color: white;
-    padding: 10px 15px;
-    margin-top: 10px;
-    border: 1px solid #218838;
-}
-.match button.declare-winner:hover {
-    background-color: #218838;
-}
-
-.winner-display {
-    font-weight: bold;
-    color: #90EE90; /* Verde claro para o vencedor */
-    margin-top: 5px;
-    font-size: 1.2em;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-}
-
-.match.completed {
-    background-color: #4a4a4a; /* Fundo mais escuro para partida finalizada */
-    border: 2px solid #90EE90; /* Borda verde clara para indicar conclusão */
-}
-.match.completed .declare-winner {
-    display: none;
-}
-.match.completed .winner-select {
-    display: none;
-}
+    color: #
