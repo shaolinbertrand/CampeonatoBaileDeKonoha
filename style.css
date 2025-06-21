@@ -307,3 +307,55 @@ button:hover {
 .match.completed .winner-select {
     display: none; /* Esconde o select após a partida */
 }
+.match {
+    background-color: #3a3a3a; /* Fundo mais escuro para a partida */
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border: 1px solid #555; /* Borda sutil */
+    position: relative;
+    overflow: hidden;
+    /* --- REMOVA OU COMENTE ESTAS LINHAS SOBRE BACKGROUND-IMAGE AQUI --- */
+    /* background-image: url('versus1.png'); */ /* REMOVER OU COMENTAR */
+    /* background-size: 80px; */ /* MANTER SE QUISER A IMAGEM PEQUENA, MAS REMOVER SE ELA FOR OCUPAR MAIS ESPAÇO */
+    /* background-repeat: no-repeat; */ /* MANTER */
+    /* background-position: center; */ /* MANTER */
+    /* opacity: 0.2; */ /* MANTER SE A OPACIDADE SERÁ SEMPRE BAIXA, OU REMOVER E CONTROLAR PELO JS */
+    /* Como vamos controlar via JS, a opacidade pode ser mais alta para o 'versus' */
+}
+
+/* As classes `vs1`, `vs2`, `vs3` continuarão no CSS, mas talvez com opacidade 1 */
+.match.vs1 {
+    background-image: url('versus1.png');
+    background-size: contain; /* Ou 'cover', dependendo do efeito desejado */
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 1; /* Aumenta a opacidade para que a imagem seja visível */
+    transition: opacity 0.5s ease-in-out; /* Adiciona uma transição suave */
+}
+.match.vs2 {
+    background-image: url('versus2.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
+}
+.match.vs3 {
+    background-image: url('versus3.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
+}
+
+/* Adicione uma classe para esconder o versus depois */
+.match.hide-versus {
+    background-image: none !important; /* Força a remoção da imagem */
+    opacity: 0 !important;
+}
