@@ -5,60 +5,59 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    /* Você pode escolher uma das fontes importadas se quiser um toque mais temático */
-    /* font-family: 'Press Start 2P', cursive; */
-    /* font-family: 'Permanent Marker', cursive; */
-    background-color: #1a1a1a; /* Fundo escuro, mais misterioso */
-    color: #e0e0e0; /* Texto claro */
-    margin: 0; /* Remove margem padrão */
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+    margin: 0;
     padding: 20px;
     text-align: center;
-    /* --- IMAGEM DE FUNDO AKATSUKI --- */
-    background-image: url('akatsuki.png'); /* Sua imagem da Akatsuki */
-    background-size: cover; /* Cobre todo o fundo */
+    background-image: url('akatsuki.png');
+    background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
-    background-attachment: fixed; /* Mantém o fundo fixo ao rolar */
+    background-attachment: fixed;
 }
 
 /* --- Títulos --- */
 h1 {
-    color: #FFD700; /* Dourado para destaque */
+    color: #FFD700;
     text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
-    font-family: 'Permanent Marker', cursive; /* Fonte mais "ninja" para o título principal */
+    font-family: 'Permanent Marker', cursive;
     font-size: 3em;
     margin-bottom: 30px;
     letter-spacing: 2px;
 }
 
 h2 {
-    color: #4CAF50; /* Verde de Konoha */
-    border-bottom: 2px solid #FFD700; /* Borda dourada */
+    color: #4CAF50;
+    border-bottom: 2px solid #FFD700;
     padding-bottom: 10px;
     margin-bottom: 25px;
-    font-family: 'Press Start 2P', cursive; /* Fonte pixelada para sub-títulos */
+    font-family: 'Press Start 2P', cursive;
     font-size: 1.8em;
 }
 
 /* --- Container Principal --- */
 .container {
-    background-color: rgba(30, 30, 30, 0.9); /* Fundo semi-transparente para o container */
+    background-color: rgba(30, 30, 30, 0.9);
     padding: 40px;
     border-radius: 15px;
     box-shadow: 0 8px 16px rgba(0,0,0,0.5);
     max-width: 1000px;
     margin: 40px auto;
     text-align: left;
-    border: 3px solid #FFD700; /* Borda dourada mais grossa */
-    position: relative; /* Para posicionar elementos decorativos */
-    overflow: hidden; /* Garante que nada vaze */
+    border: 3px solid #FFD700;
+    position: relative;
+    overflow: hidden;
+    display: flex; /* Adicionado para controlar o layout das seções */
+    flex-direction: column; /* Para empilhar as seções */
+    align-items: center; /* Centraliza as seções */
 }
 
 /* Detalhes de Kunai nos cantos (exemplo, você pode substituir por algo mais Akatsuki) */
 .container::before, .container::after {
     content: '';
     position: absolute;
-    width: 50px; /* Tamanho da kunai */
+    width: 50px;
     height: 50px;
     background-size: contain;
     background-repeat: no-repeat;
@@ -68,14 +67,14 @@ h2 {
 .container::before {
     top: -25px;
     left: -25px;
-    background-image: url('kunai-icon.png'); /* Ícone de kunai. Verifique o nome do arquivo. */
+    background-image: url('kunai-icon.png');
     transform: rotate(-45deg);
 }
 
 .container::after {
     bottom: -25px;
     right: -25px;
-    background-image: url('kunai-icon.png'); /* Ícone de kunai. Verifique o nome do arquivo. */
+    background-image: url('kunai-icon.png');
     transform: rotate(135deg);
 }
 
@@ -85,16 +84,16 @@ input[type="text"] {
     padding: 12px;
     width: calc(100% - 150px);
     margin-right: 15px;
-    border: 2px solid #FFD700; /* Borda dourada */
+    border: 2px solid #FFD700;
     border-radius: 8px;
     font-size: 1.1em;
-    background-color: #2b2b2b; /* Fundo escuro */
+    background-color: #2b2b2b;
     color: #eee;
-    outline: none; /* Remove a borda de foco padrão */
+    outline: none;
     transition: border-color 0.3s ease;
 }
 input[type="text"]:focus {
-    border-color: #4CAF50; /* Verde de Konoha ao focar */
+    border-color: #4CAF50;
 }
 
 button {
@@ -112,7 +111,7 @@ button:hover {
 }
 
 #addPlayerBtn {
-    background-color: #007bff; /* Azul clássico */
+    background-color: #007bff;
     color: white;
     border: 1px solid #0056b3;
 }
@@ -125,6 +124,7 @@ button:hover {
     margin-bottom: 30px;
     padding-bottom: 20px;
     border-bottom: 1px dashed #444;
+    width: 100%; /* Ocupa a largura total do container */
 }
 
 .player-item {
@@ -139,11 +139,11 @@ button:hover {
     border-bottom: none;
 }
 .player-item span {
-    color: #90EE90; /* Verde claro para nomes */
+    color: #90EE90;
 }
 
 .player-item button {
-    background-color: #dc3545; /* Vermelho forte para remover */
+    background-color: #dc3545;
     color: white;
     font-size: 0.9em;
     padding: 6px 12px;
@@ -154,7 +154,7 @@ button:hover {
 }
 
 #startTournamentBtn {
-    background-color: #FFC107; /* Amarelo/Laranja para iniciar */
+    background-color: #FFC107;
     color: #333;
     margin-top: 30px;
     border: 1px solid #e0a800;
@@ -174,23 +174,24 @@ button:hover {
     margin-top: 40px;
     padding-top: 20px;
     border-top: 1px dashed #444;
+    width: 100%; /* Ocupa a largura total do container */
 }
 
 .tournament-bracket {
     display: flex;
-    justify-content: center; /* Centraliza as rodadas */
+    justify-content: center;
     padding: 20px 0;
     flex-wrap: wrap;
-    gap: 20px; /* Espaçamento entre rodadas */
+    gap: 20px;
 }
 
 .round {
     margin: 10px;
     padding: 15px;
-    border-right: 2px solid #555; /* Borda separadora de rodadas */
-    flex-basis: 0; /* Permite que o flexbox distribua o espaço */
+    border-right: 2px solid #555;
+    flex-basis: 0;
     flex-grow: 1;
-    min-width: 200px; /* Largura mínima para rodada */
+    min-width: 200px;
     background-color: #252525;
     border-radius: 8px;
 }
@@ -199,7 +200,7 @@ button:hover {
 }
 
 .match {
-    background-color: #3a3a3a; /* Fundo mais escuro para a partida */
+    background-color: #3a3a3a;
     margin-bottom: 15px;
     padding: 15px;
     border-radius: 8px;
@@ -207,41 +208,46 @@ button:hover {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    border: 1px solid #555; /* Borda sutil */
+    border: 1px solid #555;
     position: relative;
     overflow: hidden;
 }
 
-/* As classes `vs1`, `vs2`, `vs3` serão adicionadas pelo JavaScript */
-.match.vs1,
-.match.vs2,
-.match.vs3 {
+/* Estilo para as imagens VERSUS */
+.match .versus-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background-repeat: no-repeat;
     background-position: center;
-    opacity: 0; /* Inicialmente invisível. Será alterado pelo JS para aparecer. */
+    background-size: 50% 50%; /* A imagem agora ocupa 50% da área da partida */
+    opacity: 0; /* Inicia invisível */
     transition: opacity 0.3s ease-in-out;
-    z-index: 10; /* Garante que a imagem fique na frente dos jogadores e botões */
-    background-size: 50% 50%; /* Define o tamanho da imagem em 50% de largura e altura */
+    z-index: 10; /* Garante que ela esteja acima de tudo */
+    pointer-events: none; /* Permite clicar nos elementos por trás da overlay */
 }
 
-.match.show-versus {
+.match .versus-overlay.show-versus {
     opacity: 1; /* Torna a imagem visível */
 }
 
-.match.vs1 { background-image: url('versus1.png'); } /* Verifique o nome do arquivo. */
-.match.vs2 { background-image: url('versus2.png'); } /* Verifique o nome do arquivo. */
-.match.vs3 { background-image: url('versus3.png'); } /* Verifique o nome do arquivo. */
+/* Definições das imagens específicas */
+.match .versus-overlay.vs1 { background-image: url('versus1.png'); }
+.match .versus-overlay.vs2 { background-image: url('versus2.png'); }
+.match .versus-overlay.vs3 { background-image: url('versus3.png'); }
 
 
 .match .player {
     padding: 8px;
-    background-color: #4c4c4c; /* Fundo para o nome do jogador */
+    background-color: #4c4c4c;
     border-radius: 5px;
     border: 1px solid #666;
-    color: #FFD700; /* Cor dourada para o nome do jogador */
+    color: #FFD700;
     font-weight: bold;
     font-size: 1.1em;
-    z-index: 1; /* Garante que o texto fique acima do ícone de fundo */
+    z-index: 1; /* Garante que o texto fique abaixo da overlay, mas acima do fundo da partida */
 }
 
 .match select {
@@ -253,14 +259,13 @@ button:hover {
     background-color: #2b2b2b;
     color: #eee;
     font-size: 1em;
-    appearance: none; /* Remove estilo padrão do select */
-    /* Seta customizada para o select */
+    appearance: none;
     background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http://www.w3.org/2000/svg%22%20viewBox%3D%220%200%20256%20256%22%3E%3Cpath%20fill%3D%22%23eeeeee%22%20d%3D%22M200.41,84.19l-72.1,72.1a16,16,0,0,1-22.62,0L53.59,84.19A16,16,0,0,0,30.97,106.81l72.1,72.1a16,16,0,0,0,22.62,0l72.1-72.1A16,16,0,0,0,200.41,84.19Z%22/%3E%3C/svg%3E');
     background-repeat: no-repeat;
     background-position: right 10px center;
     background-size: 16px;
     cursor: pointer;
-    z-index: 1; /* Garante que o select esteja acima do background da partida */
+    z-index: 1;
 }
 .match select option {
     background-color: #2b2b2b;
@@ -268,12 +273,12 @@ button:hover {
 }
 
 .match button.declare-winner {
-    background-color: #28a745; /* Verde para declarar vencedor */
+    background-color: #28a745;
     color: white;
     padding: 10px 15px;
     margin-top: 10px;
     border: 1px solid #218838;
-    z-index: 1; /* Garante que o botão esteja acima do background da partida */
+    z-index: 1;
 }
 .match button.declare-winner:hover {
     background-color: #218838;
@@ -281,23 +286,23 @@ button:hover {
 
 .winner-display {
     font-weight: bold;
-    color: #90EE90; /* Verde claro para o vencedor */
+    color: #90EE90;
     margin-top: 5px;
     font-size: 1.2em;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-    position: relative; /* Para posicionar o ícone do vencedor */
-    padding-left: 30px; /* Espaço para o ícone */
-    display: flex; /* Para alinhar o texto e o ícone */
-    align-items: center; /* Centraliza verticalmente o ícone com o texto */
+    position: relative;
+    padding-left: 30px;
+    display: flex;
+    align-items: center;
+    z-index: 1; /* Garante que o vencedor também apareça na frente */
 }
 
 .winner-display::before {
     content: '';
-    /* --- IMAGEM JB_SHINOBI PARA O VENCEDOR --- */
-    background-image: url('jb_shinobi.png'); /* Sua imagem de vencedor. Verifique o nome do arquivo. */
+    background-image: url('jb_shinobi.png');
     background-size: contain;
     background-repeat: no-repeat;
-    width: 25px; /* Tamanho do ícone */
+    width: 25px;
     height: 25px;
     position: absolute;
     left: 0;
@@ -306,30 +311,51 @@ button:hover {
 }
 
 .match.completed {
-    background-color: #4a4a4a; /* Fundo mais escuro para partida finalizada */
-    border: 2px solid #90EE90; /* Borda verde clara para indicar conclusão */
+    background-color: #4a4a4a;
+    border: 2px solid #90EE90;
 }
 .match.completed .declare-winner {
-    display: none; /* Esconde o botão de declarar vencedor após a partida */
+    display: none;
 }
 .match.completed .winner-select {
-    display: none; /* Esconde o select após a partida */
-}
-/* Garante que o 'versus' desapareça em partidas completas */
-.match.completed .vs1,
-.match.completed .vs2,
-.match.completed .vs3 {
-    opacity: 0;
+    display: none;
 }
 
 /* --- Nova classe para ocultar elementos --- */
+/* Esta classe agora usa max-height e opacity para uma transição suave,
+   e display: none apenas no final para remover o elemento do fluxo. */
 .hidden-section {
-    display: none; /* Remove o elemento do fluxo do documento */
-    /* As propriedades de transição podem ser ajustadas ou removidas se "display: none" for muito abrupto.
-       Para transições suaves de altura/opacidade, você precisaria de max-height/opacity com 'display'
-       manipulado com delay, ou usar 'visibility: hidden' + 'opacity: 0'. */
     opacity: 0;
     max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    border: none; /* Remove bordas para a transição */
     overflow: hidden;
-    transition: opacity 0.5s ease-out, max-height 0.5s ease-out;
+    transition: opacity 0.6s ease-out, max-height 0.6s ease-out,
+                padding 0.6s ease-out, margin 0.6s ease-out, border 0.6s ease-out;
+}
+/* Para garantir que o display: none ocorra após a transição */
+.hidden-section.finalize-hide {
+    display: none;
+}
+
+/* Estilo específico para o layout de 4 jogadores (exemplo) */
+.tournament-bracket.layout-4-players .round {
+    flex-grow: 0; /* Desativa o crescimento flex para controlar melhor a largura */
+    flex-basis: 45%; /* Ajusta a largura para duas colunas */
+    margin: 10px;
+    border-right: none; /* Remove a borda entre as rodadas */
+}
+.tournament-bracket.layout-4-players .round:nth-child(even) {
+    margin-right: 0; /* Ajusta margem para a segunda coluna */
+}
+
+/* Garante que o container se ajuste quando as seções são escondidas */
+.container.tournament-started {
+    justify-content: center; /* Centraliza as chaves */
+    align-items: flex-start; /* Alinha o conteúdo da chave à esquerda, se necessário */
+    padding-top: 20px; /* Reduz padding superior se as seções de input/lista forem removidas */
+    padding-bottom: 20px; /* Reduz padding inferior */
 }
