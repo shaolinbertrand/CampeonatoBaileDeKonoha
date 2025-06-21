@@ -20,7 +20,7 @@
             <h2>Shinobis Inscritos (<span id="playerCount">0</span>)</h2>
             <div id="playerList">
                 </div>
-            <button id="startTournamentBtn" style="background-color: #ffc107; color: #333; margin-top: 20px;">Iniciar Torneio</button>
+            <button id="startTournamentBtn">Iniciar Torneio</button>
             <p style="font-size: 0.9em; color: #666;">*Mínimo de 4 jogadores para iniciar o torneio.</p>
         </div>
 
@@ -99,14 +99,8 @@
             let shuffledPlayers = shuffleArray([...players]); // Cópia embaralhada
             matches = []; // Limpa partidas anteriores
 
-            // Garante que o número de jogadores seja par para facilitar as chaves
             if (shuffledPlayers.length % 2 !== 0) {
-                // Adicione um "Bye" ou um jogador dummy para tornar par
-                // Por simplicidade, vamos assumir que sempre teremos um número par ou lidamos com um 'bye'
-                // Aqui, vou simplificar, mas em um sistema real, você pode ter byes.
-                // Para este exemplo, apenas alertar se for ímpar.
                 alert("Número ímpar de jogadores. Um jogador terá um 'bye' ou a chave pode ficar desbalanceada.");
-                // Para fins de demonstração, vamos apenas prosseguir, e o último jogador não terá um par.
             }
 
             let roundMatches = [];
@@ -142,7 +136,6 @@
                 return;
             }
 
-            // Garante que a próxima rodada também seja pareada corretamente
             if (winners.length % 2 !== 0) {
                  alert("Número ímpar de vencedores para a próxima rodada. Um jogador terá um 'bye'.");
             }
@@ -165,10 +158,12 @@
             renderTournamentBracket();
         }
 
-
         // Função para renderizar as chaves do torneio
         function renderTournamentBracket() {
             tournamentBracketDiv.innerHTML = ''; // Limpa as chaves atuais
+
+            // Array de classes para as imagens 'versus'
+            const versusClasses = ['vs1', 'vs2', 'vs3'];
 
             matches.forEach((roundMatches, roundIndex) => {
                 const roundDiv = document.createElement('div');
@@ -178,7 +173,12 @@
                 roundMatches.forEach(match => {
                     const matchDiv = document.createElement('div');
                     matchDiv.className = 'match';
-                    matchDiv.dataset.matchId = match.matchId; // Adiciona ID para facilitar a busca
+                    matchDiv.dataset.matchId = match.matchId;
+
+                    // Escolhe uma classe 'versus' aleatoriamente e adiciona
+                    const randomVersusClass = versusClasses[Math.floor(Math.random() * versusClasses.length)];
+                    matchDiv.classList.add(randomVersusClass);
+
                     if (match.winner) {
                         matchDiv.classList.add('completed');
                     }
@@ -186,7 +186,6 @@
                     let optionsHtml = `<option value="">Selecione o vencedor</option>`;
                     if (match.player1 !== 'BYE') optionsHtml += `<option value="${match.player1}">${match.player1}</option>`;
                     if (match.player2 !== 'BYE') optionsHtml += `<option value="${match.player2}">${match.player2}</option>`;
-
 
                     matchDiv.innerHTML = `
                         <div class="player">${match.player1}</div>
@@ -229,12 +228,10 @@
                 const selectedWinner = winnerSelect.value;
 
                 if (selectedWinner) {
-                    // Encontra a partida correta para atualizar o vencedor
                     let foundMatch = null;
                     let roundIndexToUpdate = -1;
                     let matchIndexToUpdate = -1;
 
-                    // Itera sobre as rodadas e partidas para encontrar a correspondência
                     for (let r = 0; r < matches.length; r++) {
                         for (let m = 0; m < matches[r].length; m++) {
                             if (matches[r][m].matchId === matchId) {
@@ -252,11 +249,10 @@
                         matchDiv.classList.add('completed');
                         renderTournamentBracket(); // Renderiza novamente para mostrar o vencedor
 
-                        // Verifica se todos os jogos da rodada atual foram concluídos
                         const allCurrentRoundMatchesCompleted = matches[currentRound].every(match => match.winner !== null);
 
                         if (allCurrentRoundMatchesCompleted) {
-                            setTimeout(() => { // Pequeno delay para a atualização visual
+                            setTimeout(() => {
                                 alert(`Todos os jogos da Rodada ${currentRound + 1} foram concluídos! Gerando próxima rodada...`);
                                 generateNextRound();
                             }, 500);
