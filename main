@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Torneio: O Melhor Shinobi do Baile de Konoha</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            margin: 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #4CAF50; /* Verde de Konoha */
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-width: 900px;
+            margin: 20px auto;
+            text-align: left;
+        }
+        .input-section, .player-list-section {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        input[type="text"] {
+            padding: 10px;
+            width: calc(100% - 100px);
+            margin-right: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        #addPlayerBtn {
+            background-color: #007bff; /* Azul para adicionar */
+            color: white;
+        }
+        #addPlayerBtn:hover {
+            background-color: #0056b3;
+        }
+        .player-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px dashed #eee;
+        }
+        .player-item:last-child {
+            border-bottom: none;
+        }
+        .player-item button {
+            background-color: #dc3545; /* Vermelho para remover */
+            color: white;
+            font-size: 0.8em;
+            padding: 5px 10px;
+        }
+        .player-item button:hover {
+            background-color: #c82333;
+        }
+        .tournament-bracket {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px 0;
+            flex-wrap: wrap;
+        }
+        .round {
+            margin: 10px;
+            padding: 10px;
+            border-right: 1px solid #ccc;
+            flex-grow: 1;
+        }
+        .round:last-child {
+            border-right: none;
+        }
+        .match {
+            background-color: #e9e9e9;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .match .player {
+            padding: 5px;
+            background-color: #fff;
+            border-radius: 3px;
+            border: 1px solid #ddd;
+        }
+        .match select {
+            width: 100%;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-top: 5px;
+        }
+        .match button.declare-winner {
+            background-color: #28a745; /* Verde para declarar vencedor */
+            color: white;
+            padding: 8px 12px;
+            margin-top: 5px;
+        }
+        .match button.declare-winner:hover {
+            background-color: #218838;
+        }
+        .winner-display {
+            font-weight: bold;
+            color: #007bff;
+            margin-top: 5px;
+        }
+        .match.completed {
+            background-color: #d4edda; /* Fundo verde claro para partida finalizada */
+            border: 1px solid #28a745;
+        }
+        .match.completed .declare-winner {
+            display: none; /* Esconde o botão de declarar vencedor após a partida */
+        }
+    </style>
+</head>
+<body>
+    <h1>Torneio: O Melhor Shinobi do Baile de Konoha</h1>
+
+    <div class="container">
+        <div class="input-section">
+            <h2>Adicionar Shinobi</h2>
+            <input type="text" id="playerNameInput" placeholder="Nome do Shinobi">
+            <button id="addPlayerBtn">Adicionar</button>
+        </div>
+
+        <div class="player-list-section">
+            <h2>Shinobis Inscritos (<span id="playerCount">0</span>)</h2>
+            <div id="playerList">
+                </div>
+            <button id="startTournamentBtn" style="background-color: #ffc107; color: #333; margin-top: 20px;">Iniciar Torneio</button>
+            <p style="font-size: 0.9em; color: #666;">*Mínimo de 4 jogadores para iniciar o torneio.</p>
+        </div>
+
+        <div class="tournament-bracket-section">
+            <h2>Chave do Torneio</h2>
+            <div id="tournamentBracket" class="tournament-bracket">
+                </div>
+        </div>
+    </div>
+
+    <script>
+        const playerNameInput = document.getElementById('playerNameInput');
+        const addPlayerBtn = document.getElementById('addPlayerBtn');
+        const playerListDiv = document.getElementById('playerList');
+        const playerCountSpan = document.getElementById('playerCount');
+        const startTournamentBtn = document.getElementById('startTournamentBtn');
+        const tournamentBracketDiv = document.getElementById('tournamentBracket');
+
+        let players = [];
+        let currentRound = 0; // Controla a rodada atual
+        let matches = []; // Armazena as partidas de cada rodada
+
+        // Função para atualizar a lista de jogadores na tela
+        function updatePlayerList() {
+            playerListDiv.innerHTML = ''; // Limpa a lista atual
+            players.forEach((player, index) => {
+                const playerItem = document.createElement('div');
+                playerItem.className = 'player-item';
+                playerItem.innerHTML = `
+                    <span>${player}</span>
+                    <button data-index="${index}">Remover</button>
+                `;
+                playerListDiv.appendChild(playerItem);
+            });
+            playerCountSpan.textContent = players.length;
+            updateStartButtonState();
+        }
+
+        // Adicionar jogador
+        addPlayerBtn.addEventListener('click', () => {
+            const playerName = playerNameInput.value.trim();
+            if (playerName && !players.includes(playerName)) { // Evita nomes duplicados
+                players.push(playerName);
+                playerNameInput.value = '';
+                updatePlayerList();
+            } else if (players.includes(playerName)) {
+                alert('Este Shinobi já foi adicionado!');
+            }
+        });
+
+        // Remover jogador (usando delegação de eventos para botões dinâmicos)
+        playerListDiv.addEventListener('click', (event) => {
+            if (event.target.tagName === 'BUTTON') {
+                const indexToRemove = parseInt(event.target.dataset.index);
+                players.splice(indexToRemove, 1);
+                updatePlayerList();
+            }
+        });
+
+        // Habilita/desabilita o botão de iniciar torneio
+        function updateStartButtonState() {
+            startTournamentBtn.disabled = players.length < 4; // Mínimo de 4 jogadores
+        }
+
+        // Função para embaralhar os jogadores (Fisher-Yates shuffle)
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Função para criar as chaves da primeira rodada
+        function createFirstRoundMatches() {
+            let shuffledPlayers = shuffleArray([...players]); // Cópia embaralhada
+            matches = []; // Limpa partidas anteriores
+
+            // Garante que o número de jogadores seja par para facilitar as chaves
+            if (shuffledPlayers.length % 2 !== 0) {
+                // Adicione um "Bye" ou um jogador dummy para tornar par
+                // Por simplicidade, vamos assumir que sempre teremos um número par ou lidamos com um 'bye'
+                // Aqui, vou simplificar, mas em um sistema real, você pode ter byes.
+                // Para este exemplo, apenas alertar se for ímpar.
+                alert("Número ímpar de jogadores. Um jogador terá um 'bye' ou a chave pode ficar desbalanceada.");
+                // Para fins de demonstração, vamos apenas prosseguir, e o último jogador não terá um par.
+            }
+
+            let roundMatches = [];
+            for (let i = 0; i < shuffledPlayers.length; i += 2) {
+                const player1 = shuffledPlayers[i];
+                const player2 = shuffledPlayers[i + 1] || 'BYE'; // Se for ímpar, o último terá um BYE
+                roundMatches.push({
+                    player1: player1,
+                    player2: player2,
+                    winner: null,
+                    matchId: `R0M${roundMatches.length}` // ID da partida
+                });
+            }
+            matches.push(roundMatches); // Adiciona a primeira rodada
+            currentRound = 0;
+            renderTournamentBracket();
+        }
+
+        // Função para gerar a próxima rodada
+        function generateNextRound() {
+            const previousRoundMatches = matches[currentRound];
+            const winners = previousRoundMatches
+                .filter(match => match.winner !== null && match.winner !== 'BYE')
+                .map(match => match.winner);
+
+            if (winners.length <= 1) { // Torneio finalizado ou apenas um vencedor
+                if (winners.length === 1) {
+                    alert(`O grande vencedor do torneio é: ${winners[0]}! Parabéns!`);
+                } else {
+                    alert('Nenhum vencedor para a próxima rodada. Verifique as partidas anteriores.');
+                }
+                startTournamentBtn.disabled = true; // Desabilita o botão de iniciar após o fim
+                return;
+            }
+
+            // Garante que a próxima rodada também seja pareada corretamente
+            if (winners.length % 2 !== 0) {
+                 alert("Número ímpar de vencedores para a próxima rodada. Um jogador terá um 'bye'.");
+            }
+
+            let nextRoundMatches = [];
+            // Embaralha os vencedores para novas combinações
+            let shuffledWinners = shuffleArray(winners);
+            for (let i = 0; i < shuffledWinners.length; i += 2) {
+                const player1 = shuffledWinners[i];
+                const player2 = shuffledWinners[i + 1] || 'BYE';
+                nextRoundMatches.push({
+                    player1: player1,
+                    player2: player2,
+                    winner: null,
+                    matchId: `R${currentRound + 1}M${nextRoundMatches.length}`
+                });
+            }
+            matches.push(nextRoundMatches);
+            currentRound++;
+            renderTournamentBracket();
+        }
+
+
+        // Função para renderizar as chaves do torneio
+        function renderTournamentBracket() {
+            tournamentBracketDiv.innerHTML = ''; // Limpa as chaves atuais
+
+            matches.forEach((roundMatches, roundIndex) => {
+                const roundDiv = document.createElement('div');
+                roundDiv.className = 'round';
+                roundDiv.innerHTML = `<h3>Rodada ${roundIndex + 1}</h3>`;
+
+                roundMatches.forEach(match => {
+                    const matchDiv = document.createElement('div');
+                    matchDiv.className = 'match';
+                    matchDiv.dataset.matchId = match.matchId; // Adiciona ID para facilitar a busca
+                    if (match.winner) {
+                        matchDiv.classList.add('completed');
+                    }
+
+                    let optionsHtml = `<option value="">Selecione o vencedor</option>`;
+                    if (match.player1 !== 'BYE') optionsHtml += `<option value="${match.player1}">${match.player1}</option>`;
+                    if (match.player2 !== 'BYE') optionsHtml += `<option value="${match.player2}">${match.player2}</option>`;
+
+
+                    matchDiv.innerHTML = `
+                        <div class="player">${match.player1}</div>
+                        <div class="player">${match.player2}</div>
+                        ${match.winner ?
+                            `<div class="winner-display">Vencedor: ${match.winner}</div>` :
+                            `<select class="winner-select">
+                                ${optionsHtml}
+                            </select>
+                            <button class="declare-winner">Declarar Vencedor</button>`
+                        }
+                    `;
+                    roundDiv.appendChild(matchDiv);
+                });
+                tournamentBracketDiv.appendChild(roundDiv);
+            });
+        }
+
+        // Iniciar torneio
+        startTournamentBtn.addEventListener('click', () => {
+            if (players.length >= 4) {
+                if (confirm('Deseja realmente iniciar o torneio? Os jogadores não poderão ser mais alterados.')) {
+                    playerNameInput.disabled = true;
+                    addPlayerBtn.disabled = true;
+                    startTournamentBtn.disabled = true;
+                    playerListDiv.querySelectorAll('button').forEach(btn => btn.disabled = true); // Desabilita botões de remover
+                    createFirstRoundMatches();
+                }
+            } else {
+                alert('Você precisa de no mínimo 4 Shinobis para iniciar o torneio!');
+            }
+        });
+
+        // Lidar com a declaração de vencedor (usando delegação de eventos)
+        tournamentBracketDiv.addEventListener('click', (event) => {
+            if (event.target.classList.contains('declare-winner')) {
+                const matchDiv = event.target.closest('.match');
+                const matchId = matchDiv.dataset.matchId;
+                const winnerSelect = matchDiv.querySelector('.winner-select');
+                const selectedWinner = winnerSelect.value;
+
+                if (selectedWinner) {
+                    // Encontra a partida correta para atualizar o vencedor
+                    let foundMatch = null;
+                    let roundIndexToUpdate = -1;
+                    let matchIndexToUpdate = -1;
+
+                    // Itera sobre as rodadas e partidas para encontrar a correspondência
+                    for (let r = 0; r < matches.length; r++) {
+                        for (let m = 0; m < matches[r].length; m++) {
+                            if (matches[r][m].matchId === matchId) {
+                                foundMatch = matches[r][m];
+                                roundIndexToUpdate = r;
+                                matchIndexToUpdate = m;
+                                break;
+                            }
+                        }
+                        if (foundMatch) break;
+                    }
+
+                    if (foundMatch) {
+                        foundMatch.winner = selectedWinner;
+                        matchDiv.classList.add('completed');
+                        renderTournamentBracket(); // Renderiza novamente para mostrar o vencedor
+
+                        // Verifica se todos os jogos da rodada atual foram concluídos
+                        const allCurrentRoundMatchesCompleted = matches[currentRound].every(match => match.winner !== null);
+
+                        if (allCurrentRoundMatchesCompleted) {
+                            setTimeout(() => { // Pequeno delay para a atualização visual
+                                alert(`Todos os jogos da Rodada ${currentRound + 1} foram concluídos! Gerando próxima rodada...`);
+                                generateNextRound();
+                            }, 500);
+                        }
+                    }
+                } else {
+                    alert('Por favor, selecione um vencedor antes de declarar.');
+                }
+            }
+        });
+
+        // Inicializa a lista de jogadores ao carregar
+        updatePlayerList();
+
+    </script>
+</body>
+</html>
