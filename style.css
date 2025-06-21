@@ -210,15 +210,24 @@ button:hover {
     border: 1px solid #555; /* Borda sutil */
     position: relative;
     overflow: hidden;
-    /* --- IMAGENS VERSUS ALEATÓRIAS --- */
-    /* Essas classes são adicionadas via JavaScript para escolher a imagem aleatória */
-    background-size: 80px; /* Ajuste o tamanho conforme sua imagem */
-    background-repeat: no-repeat;
-    background-position: center; /* Centraliza a imagem no fundo */
-    opacity: 0.2; /* Torna a imagem de fundo sutil */
 }
 
 /* As classes `vs1`, `vs2`, `vs3` serão adicionadas pelo JavaScript */
+.match.vs1,
+.match.vs2,
+.match.vs3 {
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0; /* Inicialmente invisível. Será alterado pelo JS para aparecer. */
+    transition: opacity 0.3s ease-in-out;
+    z-index: 10; /* Garante que a imagem fique na frente dos jogadores e botões */
+    background-size: 50% 50%; /* Define o tamanho da imagem em 50% de largura e altura */
+}
+
+.match.show-versus {
+    opacity: 1; /* Torna a imagem visível */
+}
+
 .match.vs1 { background-image: url('versus1.png'); } /* Verifique o nome do arquivo. */
 .match.vs2 { background-image: url('versus2.png'); } /* Verifique o nome do arquivo. */
 .match.vs3 { background-image: url('versus3.png'); } /* Verifique o nome do arquivo. */
@@ -296,7 +305,6 @@ button:hover {
     transform: translateY(-50%);
 }
 
-
 .match.completed {
     background-color: #4a4a4a; /* Fundo mais escuro para partida finalizada */
     border: 2px solid #90EE90; /* Borda verde clara para indicar conclusão */
@@ -307,62 +315,21 @@ button:hover {
 .match.completed .winner-select {
     display: none; /* Esconde o select após a partida */
 }
-.match {
-    background-color: #3a3a3a; /* Fundo mais escuro para a partida */
-    margin-bottom: 15px;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.3);
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    border: 1px solid #555; /* Borda sutil */
-    position: relative;
-    overflow: hidden;
-    /* --- REMOVA OU COMENTE ESTAS LINHAS SOBRE BACKGROUND-IMAGE AQUI --- */
-    /* background-image: url('versus1.png'); */ /* REMOVER OU COMENTAR */
-    /* background-size: 80px; */ /* MANTER SE QUISER A IMAGEM PEQUENA, MAS REMOVER SE ELA FOR OCUPAR MAIS ESPAÇO */
-    /* background-repeat: no-repeat; */ /* MANTER */
-    /* background-position: center; */ /* MANTER */
-    /* opacity: 0.2; */ /* MANTER SE A OPACIDADE SERÁ SEMPRE BAIXA, OU REMOVER E CONTROLAR PELO JS */
-    /* Como vamos controlar via JS, a opacidade pode ser mais alta para o 'versus' */
+/* Garante que o 'versus' desapareça em partidas completas */
+.match.completed .vs1,
+.match.completed .vs2,
+.match.completed .vs3 {
+    opacity: 0;
 }
 
-/* As classes `vs1`, `vs2`, `vs3` continuarão no CSS, mas talvez com opacidade 1 */
-.match.vs1 {
-    background-image: url('versus1.png');
-    background-size: contain; /* Ou 'cover', dependendo do efeito desejado */
-    background-repeat: no-repeat;
-    background-position: center;
-    opacity: 1; /* Aumenta a opacidade para que a imagem seja visível */
-    transition: opacity 0.5s ease-in-out; /* Adiciona uma transição suave */
-}
-.match.vs2 {
-    background-image: url('versus2.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    opacity: 1;
-    transition: opacity 0.5s ease-in-out;
-}
-.match.vs3 {
-    background-image: url('versus3.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    opacity: 1;
-    transition: opacity 0.5s ease-in-out;
-}
-
-/* Adicione uma classe para esconder o versus depois */
-.match.hide-versus {
-    background-image: none !important; /* Força a remoção da imagem */
-    opacity: 0 !important;
-}
+/* --- Nova classe para ocultar elementos --- */
 .hidden-section {
     display: none; /* Remove o elemento do fluxo do documento */
-    opacity: 0; /* Garante que esteja completamente transparente */
-    transition: opacity 0.5s ease-out, max-height 0.5s ease-out; /* Adiciona transição para suavidade */
-    max-height: 0; /* Ajuda na transição de altura */
-    overflow: hidden; /* Evita conteúdo visível durante a transição */
+    /* As propriedades de transição podem ser ajustadas ou removidas se "display: none" for muito abrupto.
+       Para transições suaves de altura/opacidade, você precisaria de max-height/opacity com 'display'
+       manipulado com delay, ou usar 'visibility: hidden' + 'opacity: 0'. */
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 0.5s ease-out, max-height 0.5s ease-out;
 }
