@@ -213,32 +213,6 @@ button:hover {
     overflow: hidden;
 }
 
-/* Estilo para as imagens VERSUS */
-.match .versus-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 50% 50%; /* A imagem agora ocupa 50% da área da partida */
-    opacity: 0; /* Inicia invisível */
-    transition: opacity 0.3s ease-in-out;
-    z-index: 10; /* Garante que ela esteja acima de tudo */
-    pointer-events: none; /* Permite clicar nos elementos por trás da overlay */
-}
-
-.match .versus-overlay.show-versus {
-    opacity: 1; /* Torna a imagem visível */
-}
-
-/* Definições das imagens específicas */
-.match .versus-overlay.vs1 { background-image: url('versus1.png'); }
-.match .versus-overlay.vs2 { background-image: url('versus2.png'); }
-.match .versus-overlay.vs3 { background-image: url('versus3.png'); }
-
-
 .match .player {
     padding: 8px;
     background-color: #4c4c4c;
@@ -247,7 +221,7 @@ button:hover {
     color: #FFD700;
     font-weight: bold;
     font-size: 1.1em;
-    z-index: 1; /* Garante que o texto fique abaixo da overlay, mas acima do fundo da partida */
+    z-index: 1;
 }
 
 .match select {
@@ -294,7 +268,7 @@ button:hover {
     padding-left: 30px;
     display: flex;
     align-items: center;
-    z-index: 1; /* Garante que o vencedor também apareça na frente */
+    z-index: 1;
 }
 
 .winner-display::before {
@@ -359,6 +333,8 @@ button:hover {
     padding-top: 20px; /* Reduz padding superior se as seções de input/lista forem removidas */
     padding-bottom: 20px; /* Reduz padding inferior */
 }
+
+/* --- NOVAS CLASSES PARA A IMAGEM VERSUS EM TELA CHEIA --- */
 .global-versus-overlay {
     position: fixed; /* Fixa na tela, não rola com o conteúdo */
     top: 0;
