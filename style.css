@@ -359,3 +359,30 @@ button:hover {
     padding-top: 20px; /* Reduz padding superior se as seções de input/lista forem removidas */
     padding-bottom: 20px; /* Reduz padding inferior */
 }
+.global-versus-overlay {
+    position: fixed; /* Fixa na tela, não rola com o conteúdo */
+    top: 0;
+    left: 0;
+    width: 100vw; /* 100% da largura da viewport */
+    height: 100vh; /* 100% da altura da viewport */
+    background-color: rgba(0, 0, 0, 0.7); /* Fundo escuro semi-transparente para focar na imagem */
+    display: flex; /* Para centralizar a imagem */
+    justify-content: center; /* Centraliza horizontalmente */
+    align-items: center; /* Centraliza verticalmente */
+    opacity: 0; /* Começa invisível */
+    visibility: hidden; /* Oculta completamente até ser necessário */
+    transition: opacity 0.5s ease-out, visibility 0.5s ease-out; /* Transição suave */
+    z-index: 9999; /* Garante que fique acima de tudo */
+}
+
+.global-versus-overlay img {
+    max-width: 90%; /* Limita o tamanho da imagem para caber na tela */
+    max-height: 90%; /* Limita o tamanho da imagem */
+    object-fit: contain; /* Garante que a imagem caiba sem distorcer */
+}
+
+/* Estado ativo (mostra a imagem) */
+.global-versus-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
