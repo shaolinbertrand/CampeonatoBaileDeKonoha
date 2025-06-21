@@ -359,3 +359,10 @@ button:hover {
     background-image: none !important; /* Força a remoção da imagem */
     opacity: 0 !important;
 }
+.hidden-section {
+    display: none; /* Remove o elemento do fluxo do documento */
+    opacity: 0; /* Garante que esteja completamente transparente */
+    transition: opacity 0.5s ease-out, max-height 0.5s ease-out; /* Adiciona transição para suavidade */
+    max-height: 0; /* Ajuda na transição de altura */
+    overflow: hidden; /* Evita conteúdo visível durante a transição */
+}
