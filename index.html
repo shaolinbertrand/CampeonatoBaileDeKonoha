@@ -9,7 +9,7 @@
 <body>
     <h1>Torneio: O Melhor Shinobi do Baile de Konoha</h1>
 
-    <div class="container">
+    <div class="container" id="mainContainer">
         <div class="input-section" id="inputSection">
             <h2>Adicionar Shinobi</h2>
             <input type="text" id="playerNameInput" placeholder="Nome do Shinobi">
@@ -39,19 +39,17 @@
         const startTournamentBtn = document.getElementById('startTournamentBtn');
         const tournamentBracketDiv = document.getElementById('tournamentBracket');
 
-        // --- Novas referências para as seções ---
         const inputSection = document.getElementById('inputSection');
         const playerListSection = document.getElementById('playerListSection');
+        const mainContainer = document.getElementById('mainContainer'); // Referência ao container principal
 
         let players = [];
         let currentRound = 0;
         let matches = [];
 
-        // ... (resto do seu código JavaScript, como updatePlayerList, addPlayerBtn, etc.) ...
-
         // Função para atualizar a lista de jogadores na tela
         function updatePlayerList() {
-            playerListDiv.innerHTML = ''; // Limpa a lista atual
+            playerListDiv.innerHTML = '';
             players.forEach((player, index) => {
                 const playerItem = document.createElement('div');
                 playerItem.className = 'player-item';
@@ -167,7 +165,13 @@
         function renderTournamentBracket() {
             tournamentBracketDiv.innerHTML = '';
 
-            const versusClasses = ['vs1', 'vs2', 'vs3'];
+            // Adiciona classe de layout para 4 jogadores se for a primeira rodada e houver 2 partidas (4 jogadores)
+            if (players.length === 4 && currentRound === 0) {
+                tournamentBracketDiv.classList.add('layout-4-players');
+            } else {
+                tournamentBracketDiv.classList.remove('layout-4-players');
+            }
+
 
             matches.forEach((roundMatches, roundIndex) => {
                 const roundDiv = document.createElement('div');
@@ -179,16 +183,24 @@
                     matchDiv.className = 'match';
                     matchDiv.dataset.matchId = match.matchId;
 
+                    // Adiciona a overlay para a imagem VERSUS
+                    const versusOverlay = document.createElement('div');
+                    versusOverlay.className = 'versus-overlay';
+                    matchDiv.appendChild(versusOverlay);
+
+
                     if (match.winner) {
                         matchDiv.classList.add('completed');
-                        matchDiv.classList.add('hide-versus');
+                        // Garante que a overlay versus esteja invisível se a partida já tem vencedor
+                        versusOverlay.classList.remove('show-versus');
                     }
 
                     let optionsHtml = `<option value="">Selecione o vencedor</option>`;
                     if (match.player1 !== 'BYE') optionsHtml += `<option value="${match.player1}">${match.player1}</option>`;
                     if (match.player2 !== 'BYE') optionsHtml += `<option value="${match.player2}">${match.player2}</option>`;
 
-                    matchDiv.innerHTML = `
+                    // Elementos de jogador, select e botão devem estar fora da overlay e ter z-index baixo
+                    matchDiv.innerHTML += `
                         <div class="player">${match.player1}</div>
                         <div class="player">${match.player2}</div>
                         ${match.winner ?
@@ -209,13 +221,16 @@
         startTournamentBtn.addEventListener('click', () => {
             if (players.length >= 4) {
                 if (confirm('Deseja realmente iniciar o torneio? Os jogadores não poderão ser mais alterados.')) {
-                    // --- OCULTA AS SEÇÕES DE INPUT E LISTA DE JOGADORES ---
+                    // Adiciona a classe para iniciar a transição de ocultação
                     inputSection.classList.add('hidden-section');
                     playerListSection.classList.add('hidden-section');
+                    mainContainer.classList.add('tournament-started'); // Para ajustar o container
 
-                    // Garante que a seção das chaves seja visível (caso estivesse oculta)
-                    tournamentBracketDiv.closest('.tournament-bracket-section').style.display = 'block'; // ou 'flex', dependendo do layout desejado
-                    // O container principal pode precisar de ajuste de largura se o conteúdo diminuir muito
+                    // Após a transição (ou um pequeno delay), remove o display: none para garantir a limpeza
+                    setTimeout(() => {
+                        inputSection.classList.add('finalize-hide');
+                        playerListSection.classList.add('finalize-hide');
+                    }, 600); // Deve ser maior ou igual ao tempo de transição no CSS
 
                     playerNameInput.disabled = true;
                     addPlayerBtn.disabled = true;
@@ -235,6 +250,7 @@
                 const matchId = matchDiv.dataset.matchId;
                 const winnerSelect = matchDiv.querySelector('.winner-select');
                 const selectedWinner = winnerSelect.value;
+                const versusOverlay = matchDiv.querySelector('.versus-overlay'); // Pega a nova div overlay
 
                 if (selectedWinner) {
                     let foundMatch = null;
@@ -257,21 +273,22 @@
                         const versusClasses = ['vs1', 'vs2', 'vs3'];
                         const randomVersusClass = versusClasses[Math.floor(Math.random() * versusClasses.length)];
 
-                        matchDiv.classList.remove('hide-versus');
-                        // Remove qualquer classe versus anterior para aplicar a nova aleatoriamente
-                        versusClasses.forEach(cls => matchDiv.classList.remove(cls));
-                        matchDiv.classList.add(randomVersusClass);
-                        matchDiv.style.opacity = '1';
+                        // 1. Adiciona a imagem versus à overlay e exibe
+                        versusClasses.forEach(cls => versusOverlay.classList.remove(cls)); // Limpa classes anteriores
+                        versusOverlay.classList.add(randomVersusClass);
+                        versusOverlay.classList.add('show-versus'); // Torna visível
 
+                        // 2. Esconde o select e o botão durante a "animação" do versus
                         winnerSelect.style.display = 'none';
                         event.target.style.display = 'none';
 
+                        // 3. Define um tempo para exibir o "versus" e depois processar o vencedor
                         setTimeout(() => {
                             foundMatch.winner = selectedWinner;
                             matchDiv.classList.add('completed');
-                            matchDiv.classList.add('hide-versus');
-                            // Não remove a classe randomVersusClass aqui, pois hide-versus já oculta a imagem
+                            versusOverlay.classList.remove('show-versus'); // Esconde a imagem versus
                             
+                            // Re-renderiza a chave para mostrar o vencedor e a próxima rodada
                             renderTournamentBracket();
 
                             const allCurrentRoundMatchesCompleted = matches[currentRound].every(match => match.winner !== null);
@@ -282,7 +299,7 @@
                                     generateNextRound();
                                 }, 500);
                             }
-                        }, 1500);
+                        }, 1500); // Tempo em milissegundos que a imagem 'versus' ficará visível (1.5 segundos)
 
                     }
                 } else {
