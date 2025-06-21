@@ -162,9 +162,6 @@
         function renderTournamentBracket() {
             tournamentBracketDiv.innerHTML = ''; // Limpa as chaves atuais
 
-            // Array de classes para as imagens 'versus'
-            const versusClasses = ['vs1', 'vs2', 'vs3'];
-
             matches.forEach((roundMatches, roundIndex) => {
                 const roundDiv = document.createElement('div');
                 roundDiv.className = 'round';
@@ -175,12 +172,13 @@
                     matchDiv.className = 'match';
                     matchDiv.dataset.matchId = match.matchId;
 
-                    // Escolhe uma classe 'versus' aleatoriamente e adiciona
-                    const randomVersusClass = versusClasses[Math.floor(Math.random() * versusClasses.length)];
-                    matchDiv.classList.add(randomVersusClass);
+                    // Remover a classe 'versus' aqui, ela será adicionada na declaração do vencedor
+                    // matchDiv.classList.add(randomVersusClass); // REMOVIDO AQUI
 
                     if (match.winner) {
                         matchDiv.classList.add('completed');
+                        // Se a partida já tem vencedor, garantir que a imagem versus não apareça
+                        matchDiv.classList.add('hide-versus');
                     }
 
                     let optionsHtml = `<option value="">Selecione o vencedor</option>`;
@@ -211,7 +209,7 @@
                     playerNameInput.disabled = true;
                     addPlayerBtn.disabled = true;
                     startTournamentBtn.disabled = true;
-                    playerListDiv.querySelectorAll('button').forEach(btn => btn.disabled = true); // Desabilita botões de remover
+                    playerListDiv.querySelectorAll('button').forEach(btn => btn.disabled = true);
                     createFirstRoundMatches();
                 }
             } else {
@@ -245,18 +243,39 @@
                     }
 
                     if (foundMatch) {
-                        foundMatch.winner = selectedWinner;
-                        matchDiv.classList.add('completed');
-                        renderTournamentBracket(); // Renderiza novamente para mostrar o vencedor
+                        // --- LÓGICA PARA EXIBIR E ESCONDER O VERSUS ---
+                        const versusClasses = ['vs1', 'vs2', 'vs3'];
+                        const randomVersusClass = versusClasses[Math.floor(Math.random() * versusClasses.length)];
 
-                        const allCurrentRoundMatchesCompleted = matches[currentRound].every(match => match.winner !== null);
+                        // 1. Adiciona a imagem versus e exibe
+                        matchDiv.classList.remove('hide-versus'); // Garante que não esteja escondido
+                        matchDiv.classList.add(randomVersusClass);
+                        matchDiv.style.opacity = '1'; // Torna visível (se a transição estiver no CSS)
 
-                        if (allCurrentRoundMatchesCompleted) {
-                            setTimeout(() => {
-                                alert(`Todos os jogos da Rodada ${currentRound + 1} foram concluídos! Gerando próxima rodada...`);
-                                generateNextRound();
-                            }, 500);
-                        }
+                        // 2. Esconde o select e o botão durante a "animação" do versus
+                        winnerSelect.style.display = 'none';
+                        event.target.style.display = 'none';
+                        
+                        // 3. Define um tempo para exibir o "versus" e depois processar o vencedor
+                        setTimeout(() => {
+                            foundMatch.winner = selectedWinner;
+                            matchDiv.classList.add('completed');
+                            matchDiv.classList.add('hide-versus'); // Esconde a imagem versus
+                            matchDiv.classList.remove(randomVersusClass); // Remove a classe versus
+                            
+                            // Re-renderiza a chave para mostrar o vencedor e a próxima rodada
+                            renderTournamentBracket();
+
+                            const allCurrentRoundMatchesCompleted = matches[currentRound].every(match => match.winner !== null);
+
+                            if (allCurrentRoundRoundMatchesCompleted) {
+                                setTimeout(() => {
+                                    alert(`Todos os jogos da Rodada ${currentRound + 1} foram concluídos! Gerando próxima rodada...`);
+                                    generateNextRound();
+                                }, 500); // Pequeno delay antes de gerar a próxima rodada
+                            }
+                        }, 1500); // Tempo em milissegundos que a imagem 'versus' ficará visível (1.5 segundos)
+
                     }
                 } else {
                     alert('Por favor, selecione um vencedor antes de declarar.');
